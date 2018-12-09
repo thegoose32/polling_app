@@ -1,0 +1,12 @@
+<h1>New Poll Question</h1>
+
+<form action="{% url 'polls:newQuestion' %}" method="post">
+  {% csrf_token %}
+  <fieldset>
+    <legend>Question Data</legend>
+    Question:<br>
+    <input type="text" name="question_text"><br>
+    <input type="submit" value="Submit">
+  </fieldset>
+</form>
+

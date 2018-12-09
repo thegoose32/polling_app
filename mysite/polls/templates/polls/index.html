@@ -1,0 +1,29 @@
+{% load static %}
+
+<h2>Poll List</h2>
+<br>
+  {% if latest_question_list %}
+  <table>
+    <tr>
+      <td>Question:</td>
+      <td>Votes:</td>
+      <td>Add Answers:</td>
+      <td>Delete:</td>
+    </tr>
+      {% for question in latest_question_list %}
+        <tr>
+          <td><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></td>
+          <td> question.vote_count()</td>
+          <td><a href="{% url 'polls:newAnswerForm' question.id %}">Add Answer</a></td>
+          <td><a href="{% url 'polls:deleteQuestion' question.id %}">Delete</a></td>
+        </tr>
+      {% endfor %}
+
+</table>
+<br>
+</br>
+<a href="{% url 'polls:new_question' %}">New Question</a>
+{% else %}
+    <p>No polls are available.</p>
+    <a href="{% url 'polls:new_question' %}">New Question</a>
+{% endif %}

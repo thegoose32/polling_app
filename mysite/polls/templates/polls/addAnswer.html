@@ -1,0 +1,9 @@
+<h1>New Poll Answer</h1>
+
+<p>{{ question.question_text }}</p>
+<br>
+<form action="{% url 'polls:addAnswer' question.id %}" method="post">
+  {% csrf_token %}
+  <input type="text" name="answer_text"><br>
+  <input type="submit" value="Submit">
+</form>
