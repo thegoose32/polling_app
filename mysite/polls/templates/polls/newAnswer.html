@@ -5,11 +5,13 @@
 <table>
   <tr>
     <th>Answer</th>
+    <th>Current Vote Count</th>
     <th>Delete</th>
   </tr>
   {% for choice in question.choice_set.all %}
     <tr> 
       <td> {{ choice.choice_text }} </td>
+      <td> {{ choice.votes }} </td>
       <td> 
         <a href="{% url 'polls:deleteAnswer' choice.id %}" method="post">Delete</a>
       </td>

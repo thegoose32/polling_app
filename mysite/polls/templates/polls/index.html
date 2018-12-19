@@ -7,13 +7,17 @@
     <tr>
       <td>Question:</td>
       <td>Votes:</td>
+      <td># of Choices</td>
+      <td>Top Answer:</td>
       <td>Add Answers:</td>
       <td>Delete:</td>
     </tr>
       {% for question in latest_question_list %}
         <tr>
           <td><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></td>
-          <td> question.vote_count()</td>
+          <td> {{ question.vote_count }} </td>
+          <td> {{ question.choice_count }} </td>
+          <td> {{ question.max_choice_count }} </td>
           <td><a href="{% url 'polls:newAnswerForm' question.id %}">Add Answer</a></td>
           <td><a href="{% url 'polls:deleteQuestion' question.id %}">Delete</a></td>
         </tr>
@@ -23,6 +27,8 @@
 <br>
 </br>
 <a href="{% url 'polls:new_question' %}">New Question</a>
+<br>
+<a href="{% url 'polls:department' %}">Departments</a>
 {% else %}
     <p>No polls are available.</p>
     <a href="{% url 'polls:new_question' %}">New Question</a>

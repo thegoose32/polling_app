@@ -1,13 +1,10 @@
 from django.contrib import admin
 
-from .models import Question, Choice, Company, User
+from .models import Question, Choice, Department 
 
 class ChoiceInline(admin.TabularInline):
     model = Choice
     extra = 3
-
-class UserAdmin(admin.TabularInline):
-    model = User
 
 class QuestionAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -19,9 +16,8 @@ class QuestionAdmin(admin.ModelAdmin):
     list_filter = ['pub_date']
     search_fields = ['question_text']
 
-class CompanyAdmin(admin.ModelAdmin):
-    list_display = ('company_name', 'company_start_year', 'company_size')
-    inlines = [UserAdmin]
+class DepartmentAdmin(admin.TabularInline):
+    model = Department
 
 admin.site.register(Question, QuestionAdmin)
-admin.site.register(Company, CompanyAdmin)
+admin.site.register(Department)

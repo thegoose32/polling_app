@@ -1,0 +1,25 @@
+
+<body>
+  <h2>Departments</h2>
+  <br>
+  <table>
+    <tr>
+      <td>Department Name</td>
+      <td>Department Number</td>
+      <td>Department Head</td>
+      <td></td>
+    </tr>
+    {% for dept in dept_list %}
+    <tr>
+      <td> {{ dept.name }} </td>
+      <td> {{ dept.number }} </td>
+      <td> {{ dept.head }} </td>
+      <td> <a href="{% url 'polls:editDept' dept.id %}">Edit</a></td>
+      <td> <a href="{% url 'polls:deleteDept' dept.id %}">Delete</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <br>
+  <a href="{% url 'polls:new_department' %}">New Department</a><br>
+  <a href="{% url 'polls:index' %}">Questions</a>
+</body>

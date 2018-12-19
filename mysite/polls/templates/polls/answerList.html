@@ -1,0 +1,16 @@
+<h1>Choice List</h1>
+<br>
+<table>
+  <tr>
+    <td>Choice</td>
+    <td>Associated Question</td>
+  </tr>
+  {% for choice in choice.choice_set_all %}
+  <tr>
+    <td>{{ choice.choice_text }}</td>
+    <td>{{ choice.question }} </td>
+  </tr>
+  {% endfor %}
+</table>
+<br>
+<a href="{% url 'polls:index' %}">Back</a> 

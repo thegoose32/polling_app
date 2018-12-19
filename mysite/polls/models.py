@@ -2,6 +2,8 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from django.db.models import Max
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -16,11 +18,27 @@ class Question(models.Model):
     was_published_recently.admin_order_field = 'pub_date'
     was_published_recently.boolean = True
     was_published_recently.short_description = 'Published recently?'
+
+    @property
+    def choice_count(self):
+        return self.choice_set.all().count()
+
+    @property
     def vote_count(self):
         count = 0
-        for choice in self.choice_set.all:
+        for choice in self.choice_set.all():
             count += choice.votes
         return count
+
+    @property
+    def max_choice_count(self):
+        question_choices = self.choice_set.all().order_by('votes').first()
+        if question_choices == None:
+            return 'N/A - no answers'
+        elif question_choices.votes == 0:
+            return 'N/A - no votes'
+        else:
+            return question_choices.choice_text
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -29,15 +47,10 @@ class Choice(models.Model):
     def __str__(self):
         return self.choice_text
 
-class Company(models.Model):
-    company_name = models.CharField(max_length=200)
-    company_size = models.IntegerField(default=0)
-    company_start_year = models.IntegerField(max_length=4)
+class Department(models.Model):
+    name = models.CharField(max_length=200)
+    number = models.IntegerField(default=1000)
+    head = models.CharField(max_length=50)
     def __str__(self):
-        return self.company_name
+        return self.name
 
-class User(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    user_name = models.CharField(max_length=50)
-    user_email = models.CharField(max_length=50)
-    user_role = models.CharField(max_length=50)
