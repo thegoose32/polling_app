@@ -2,11 +2,12 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import Http404
 from django.template import loader
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.utils import timezone
 from django.db.models import Aggregate
 from django.forms import ModelForm
+from django.views.generic.edit import UpdateView
 
 from .models import Choice, Question, Department
 from .forms import NewQuestionForm, DeptForm
@@ -21,18 +22,6 @@ def newQuestionForm(request):
     else:
         form = NewQuestionForm()
     return render(request, 'polls/newQuestion.html', {'form': form})
-
-
-def deptForm(request):
-    if request.method == 'POST':
-        a = Department.get(id=request.GET['id'])
-        form = DeptForm(request.POST, instance=a)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('polls:department'))
-    else:
-        form = DeptForm()
-    return render(request, 'polls/newDept.html', {'form': form})
 
 def newAnswerForm(request):
     if request.method == 'POST':
@@ -124,10 +113,27 @@ def deleteDept(request, dept_id):
     return HttpResponseRedirect(reverse('polls:department'))
 
 def editDept(request, dept_id):
+    dept = get_object_or_404(Department, id=dept_id)
+    form = DeptForm(request.POST or None, instance=dept)
     if request.method == 'POST':
-        a = Department.get(id=dept_id)
-        form = DeptForm(request.POST, instance=a)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('polls:department'))
+    return render(request, 'polls/editDept.html', {'form': form})
+
+def createDept(request):
+    if request.method == 'POST':
+        form = DeptForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return HttpResponseRedirect(reverse('polls:department'))
+    else:
+        form = DeptForm()
     return render(request, 'polls/newDept.html', {'form': form})
+
+class DeptUpdate(UpdateView):
+    template_name = 'polls/editDept_update_form.html'
+    form_class = DeptForm
+    model = Department
+    success_url = reverse_lazy('polls:department')

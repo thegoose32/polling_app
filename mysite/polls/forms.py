@@ -11,3 +11,4 @@ class DeptForm(forms.ModelForm):
     class Meta:
         model = Department
         fields = ['name', 'number', 'head']
+
