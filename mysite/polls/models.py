@@ -54,3 +54,10 @@ class Department(models.Model):
     def __str__(self):
         return self.name
 
+class Employee(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=100)
+    start_date = models.DateField()
+    email = models.EmailField()
+    salary = models.IntegerField()
+    department = models.ForeignKey(Department, on_delete=models.PROTECT)

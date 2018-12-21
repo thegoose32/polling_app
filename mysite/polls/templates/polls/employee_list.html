@@ -1,0 +1,31 @@
+<body>
+  <h2>Employees</h2>
+  <br>
+  <table>
+    <tr>
+      <th align="left">First Name</th>
+      <th align="left">Last Name</th>
+      <th align="left">Email</th>
+      <th align="left">Start Date</th>
+      <th align="right">Salary</th>
+      <th align="left">Department</th>
+      <th></th>
+      <th></th>
+    </tr>
+    {% for employee in employee_list %}
+    <tr>
+      <td> {{ employee.first_name }} </td>
+      <td> {{ employee.last_name }} </td>
+      <td> {{ employee.email }} </td>
+      <td> {{ employee.start_date }} </td>
+      <td> {{ employee.salary }} </td>
+      <td> {{ employee.department }} </td>
+      <td> <a href="{% url 'polls:editEmployee' employee.id %}">Edit</a></td>
+      <td> <a href="{% url 'polls:deleteEmployee' employee.id %}">Delete</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <br>
+  <a href="{% url 'polls:new_employee' %}">New Employee</a><br>
+  <a href="{% url 'polls:index' %}">Questions</a>
+</body>

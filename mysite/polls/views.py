@@ -7,12 +7,10 @@ from django.views import generic
 from django.utils import timezone
 from django.db.models import Aggregate
 from django.forms import ModelForm
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView
 
-from .models import Choice, Question, Department
-from .forms import NewQuestionForm, DeptForm
-
-#Forms
+from .models import Choice, Question, Department, Employee
+from .forms import NewQuestionForm, DeptForm, EmployeeForm
 
 def newQuestionForm(request):
     if request.method == 'Post':
@@ -41,12 +39,6 @@ class IndexView(generic.ListView):
             pub_date__lte=timezone.now()
         ).order_by('-pub_date')[:10]
 
-class DeptView(generic.ListView):
-    queryset = Department.objects.order_by('number')
-    model = Department
-    template_name = 'polls/department.html'
-    context_object_name = 'dept_list'
-
 class DetailView(generic.DetailView):
     model = Question
     template_name = 'polls/detail.html'
@@ -72,9 +64,6 @@ def vote(request, question_id):
         selected_choice.votes += 1
         selected_choice.save()
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
-
-#def newQuestionForm(request):
-#    return render(request, 'polls/newQuestion.html') 
 
 def newQuestion(request):
     #Create instance of Question class
@@ -107,19 +96,13 @@ def deleteAnswer(request, choice_id):
     choice.delete()
     return HttpResponseRedirect(reverse('polls:newAnswerForm', args=(question.id,)))
 
-def deleteDept(request, dept_id):
-    dept = get_object_or_404(Department, pk=dept_id)
-    dept.delete()
-    return HttpResponseRedirect(reverse('polls:department'))
+#Departments:
 
-def editDept(request, dept_id):
-    dept = get_object_or_404(Department, id=dept_id)
-    form = DeptForm(request.POST or None, instance=dept)
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('polls:department'))
-    return render(request, 'polls/editDept.html', {'form': form})
+class DeptView(generic.ListView):
+    queryset = Department.objects.order_by('number')
+    model = Department
+    template_name = 'polls/department.html'
+    context_object_name = 'dept_list'
 
 def createDept(request):
     if request.method == 'POST':
@@ -137,3 +120,36 @@ class DeptUpdate(UpdateView):
     form_class = DeptForm
     model = Department
     success_url = reverse_lazy('polls:department')
+
+class DeptDelete(DeleteView):
+    model = Department
+    success_url = reverse_lazy('polls:department')
+
+#Employees:
+
+class EmployeeView(generic.ListView):
+    queryset = Employee.objects.order_by('department')
+    model = Employee
+    template_name = 'polls/employee_list.html'
+    context_object_name = 'employee_list'
+
+def addEmployee(request):
+    if request.method == 'POST':
+        form = EmployeeForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return HttpResponseRedirect(reverse('polls:employees'))
+    else:
+        form = EmployeeForm()
+    return render(request, 'polls/newEmployee.html', {'form': form})
+
+class EmployeeUpdate(UpdateView):
+    template_name = 'polls/editEmployee.html'
+    form_class = EmployeeForm
+    model = Employee
+    success_url = reverse_lazy('polls:employees')
+
+class EmployeeDelete(DeleteView):
+    model = Employee
+    success_url = reverse_lazy('polls:employees')

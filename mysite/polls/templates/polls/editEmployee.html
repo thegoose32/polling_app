@@ -1,0 +1,9 @@
+<h1>Edit Employee</h1>
+
+<form action="{% url 'polls:editEmployee' employee.id %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+</form>
+<br>
+<a href="{% url 'polls:employees' %}">Employee Listing</a>
